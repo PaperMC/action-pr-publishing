@@ -30,10 +30,11 @@ export async function runFromWorkflow(): Promise<void> {
   }
 
   if (workflow_run.event != 'pull_request') {
-    console.log(
-      `Aborting, only events of type 'pull_request' can trigger publishing`
-    )
-    return
+    //console.log(
+    //  `Aborting, only events of type 'pull_request' can trigger publishing`
+    //)
+    //return
+    console.log('Non-pull_request event detected, continuing with publishing')
   }
 
   if (!workflow_run.head_branch) {
