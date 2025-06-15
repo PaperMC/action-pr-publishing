@@ -127,19 +127,6 @@ export async function runPR(
     const publishingToken =
       getInput('publishing-token') ?? process.env['GITHUB_TOKEN']!
 
-    /*
-    let selfComment = await getSelfComment(octo, prNumber)
-    if (!selfComment) {
-      selfComment = await createInitialComment(octo, pr)
-    }
-
-    if (!(await shouldPublish(octo, pr, selfComment))) {
-      await check.skipped()
-      console.log(`PR is not published as checkbox is not ticked`)
-      return
-    }
-     */
-
     // Step 2
     const artifact = await octo.rest.actions
       .listWorkflowRunArtifacts({
@@ -309,14 +296,15 @@ ${oldComment}
 
 </details>`
 
-    // Step 5
-    /*
-    if (selfComment) {
-      await octo.rest.issues.updateComment({
-        ...context.repo,
-        comment_id: selfComment!.id,
-        body: comment
-      })
+    const selfComment = await getSelfComment(octo, prNumber)
+    if (!selfComment) {
+      await octo.rest.issues
+        .createComment({
+          ...context.repo,
+          issue_number: pr.number,
+          body: comment
+        })
+        .then(res => res.data)
     } else {
       await octo.rest.issues.createComment({
         ...context.repo,
@@ -324,7 +312,6 @@ ${oldComment}
         body: comment
       })
     }
-     */
 
     await check.succeed(firstPublishUrl, oldComment, artifacts)
 
@@ -372,23 +359,22 @@ async function generateComment(
   comment += `  \n\n### Repository Declaration\nIn order to use the artifacts published by the PR, add the following repository to your buildscript:`
   const includeModules = unique(
     artifacts
-      .map(art => `includeModule('${art.group}', '${art.name}')`)
+      .map(art => `includeModule("${art.group}", "${art.name}")`)
       .map(a => `            ${a}`)
   ) // Indent
     .join('\n')
   const repoBlock = `repositories {
-    maven {
-        name 'Maven for PR #${prNumber}' // https://github.com/${
+    maven("${getInput('base-maven-url')}/${context.repo.repo}/pr${prNumber}") {
+        name = "Maven for PR #${prNumber}" // https://github.com/${
           context.repo.owner
         }/${context.repo.repo}/pull/${prNumber}
-        url '${getInput('base-maven-url')}/${context.repo.repo}/pr${prNumber}'
-        content {
+        mavenContent {
 ${includeModules}
         }
     }
 }`
   comment += `
-\`\`\`gradle
+\`\`\`kotlin
 ${repoBlock}
 \`\`\``
   return { comment, repoBlock, firstPublishUrl }
