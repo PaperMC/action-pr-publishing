@@ -554,7 +554,7 @@ export interface PublishedArtifact {
 }
 
 function getPackageName(prNumber: number, artifact: PublishedArtifact) {
-  return `pr${prNumber}.${artifact.group}.${artifact.name}`
+  return `${artifact.group}.${artifact.name}-pr${prNumber}`
 }
 
 async function attemptToFindMDK(

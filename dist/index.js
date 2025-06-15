@@ -56896,7 +56896,7 @@ async function getSelfComment(octo, prNumber) {
     return undefined;
 }
 function getPackageName(prNumber, artifact) {
-    return `pr${prNumber}.${artifact.group}.${artifact.name}`;
+    return `${artifact.group}.${artifact.name}-pr${prNumber}`;
 }
 async function attemptToFindMDK(mcMajor, mcMinor, config, mdg = true) {
     const fallback = async () => {
