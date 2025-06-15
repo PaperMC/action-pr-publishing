@@ -284,8 +284,6 @@ export async function runPR(
 
     const oldComment = comment
     comment = `
-- [x] ${shouldPublishCheckBox}
-
 Last commit published: [${headSha}](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${headSha}).
 
 <details>
