@@ -56763,10 +56763,10 @@ ${oldComment}
                 .then(res => res.data);
         }
         else {
-            await octo.rest.issues.createComment({
+            await octo.rest.issues.updateComment({
                 ...github_1.context.repo,
-                issue_number: prNumber,
-                body: comment
+                body: comment,
+                comment_id: selfComment.id
             });
         }
         await check.succeed(firstPublishUrl, oldComment, artifacts);

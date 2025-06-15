@@ -318,10 +318,10 @@ ${oldComment}
         })
         .then(res => res.data)
     } else {
-      await octo.rest.issues.createComment({
+      await octo.rest.issues.updateComment({
         ...context.repo,
-        issue_number: prNumber,
-        body: comment
+        body: comment,
+        comment_id: selfComment.id
       })
     }
 
