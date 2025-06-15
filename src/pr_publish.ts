@@ -290,7 +290,7 @@ export async function runPR(
     )
     let paperclipMsg =
       'Failed to find Paperclip artifact, please check the workflow run logs.'
-    if (!paperclipArtifact) {
+    if (paperclipArtifact) {
       const link = `https://nightly.link/${context.repo.owner}/${context.repo.repo}/actions/artifacts/${artifact.id}.zip`
       paperclipMsg = `Download the Paperclip jar for this pull request: [${artifact.name}.zip](${link})`
     }
