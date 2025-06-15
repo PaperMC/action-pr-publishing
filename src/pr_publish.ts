@@ -171,7 +171,7 @@ export async function runPR(
     })
 
     const artifacts: PublishedArtifact[] = []
-    const basePath = `https://maven.pkg.github.com/${context.repo.owner}/${context.repo.repo}/`
+    const basePath = `https://maven.pkg.github.com/${context.repo.owner}/${context.repo.repo}/pr${prNumber}/`
 
     const uploader = async (path: string, bf: ArrayBuffer) => {
       await axios.put(basePath + path, bf, {
@@ -364,8 +364,8 @@ async function generateComment(
   ) // Indent
     .join('\n')
   const repoBlock = `repositories {
-    maven("${getInput('base-maven-url')}/${context.repo.repo}") {
-        name = "Maven for ${context.repo.repo} PRs" // https://github.com/${
+    maven("${getInput('base-maven-url')}/${context.repo.repo}/pr${prNumber}") {
+        name = "Maven for PR #${prNumber}" // https://github.com/${
           context.repo.owner
         }/${context.repo.repo}/pull/${prNumber}
         mavenContent {
@@ -540,7 +540,7 @@ export interface PublishedArtifact {
 }
 
 function getPackageName(prNumber: number, artifact: PublishedArtifact) {
-  return `${artifact.group}.${artifact.name}`
+  return `pr${prNumber}.${artifact.group}.${artifact.name}`
 }
 
 async function attemptToFindMDK(
