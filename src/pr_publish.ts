@@ -296,6 +296,8 @@ export async function runPR(
     }
 
     comment = `
+Last updated for: [${headSha}](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${headSha}).
+
 ${paperclipMsg}
 
 <details>
@@ -304,8 +306,7 @@ ${paperclipMsg}
 
 ${oldComment}
 
-</details>
-Last updated for: [${headSha}](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${headSha}).`
+</details>`
 
     const selfComment = await getSelfComment(octo, prNumber)
     if (!selfComment) {

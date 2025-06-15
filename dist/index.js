@@ -56741,6 +56741,8 @@ async function runPR(octo, pr, headSha, runId) {
             paperclipMsg = `Download the Paperclip jar for this pull request: [${artifact.name}.zip](${link})`;
         }
         comment = `
+Last updated for: [${headSha}](https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/commit/${headSha}).
+
 ${paperclipMsg}
 
 <details>
@@ -56749,8 +56751,7 @@ ${paperclipMsg}
 
 ${oldComment}
 
-</details>
-Last updated for: [${headSha}](https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/commit/${headSha}).`;
+</details>`;
         const selfComment = await getSelfComment(octo, prNumber);
         if (!selfComment) {
             await octo.rest.issues
