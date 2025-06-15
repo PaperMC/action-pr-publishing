@@ -128,13 +128,13 @@ export async function runPR(
       getInput('publishing-token') ?? process.env['GITHUB_TOKEN']!
 
     // Step 2
-    const actionsArtifacts = octo.rest.actions
-      .listWorkflowRunArtifacts({
-        ...context.repo,
-        run_id: runId
-      })
-    const artifact = await actionsArtifacts
-      .then(art => art.data.artifacts.find(ar => ar.name == 'maven-publish'))
+    const actionsArtifacts = octo.rest.actions.listWorkflowRunArtifacts({
+      ...context.repo,
+      run_id: runId
+    })
+    const artifact = await actionsArtifacts.then(art =>
+      art.data.artifacts.find(ar => ar.name == 'maven-publish')
+    )
     if (!artifact) {
       await check.succeed(
         undefined,
@@ -285,8 +285,11 @@ export async function runPR(
 
     const oldComment = comment
 
-    const paperclipArtifact = await actionsArtifacts.then(art => art.data.artifacts.find(ar => ar.name == `paper-${prNumber}`))
-    let paperclipMsg = "Failed to find Paperclip artifact, please check the workflow run logs."
+    const paperclipArtifact = await actionsArtifacts.then(art =>
+      art.data.artifacts.find(ar => ar.name == `paper-${prNumber}`)
+    )
+    let paperclipMsg =
+      'Failed to find Paperclip artifact, please check the workflow run logs.'
     if (!paperclipArtifact) {
       const link = `https://nightly.link/${context.repo.owner}/${context.repo.repo}/actions/artifacts/${artifact.id}.zip`
       paperclipMsg = `Download the Paperclip jar for this pull request: [${artifact.name}.zip](${link})`
