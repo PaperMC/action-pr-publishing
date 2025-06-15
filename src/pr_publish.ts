@@ -127,6 +127,7 @@ export async function runPR(
     const publishingToken =
       getInput('publishing-token') ?? process.env['GITHUB_TOKEN']!
 
+    /*
     let selfComment = await getSelfComment(octo, prNumber)
     if (!selfComment) {
       selfComment = await createInitialComment(octo, pr)
@@ -137,6 +138,7 @@ export async function runPR(
       console.log(`PR is not published as checkbox is not ticked`)
       return
     }
+     */
 
     // Step 2
     const artifact = await octo.rest.actions
@@ -308,6 +310,7 @@ ${oldComment}
 </details>`
 
     // Step 5
+    /*
     if (selfComment) {
       await octo.rest.issues.updateComment({
         ...context.repo,
@@ -321,6 +324,7 @@ ${oldComment}
         body: comment
       })
     }
+     */
 
     await check.succeed(firstPublishUrl, oldComment, artifacts)
 

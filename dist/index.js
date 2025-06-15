@@ -56539,7 +56539,6 @@ const core_1 = __nccwpck_require__(2186);
 const fast_xml_parser_1 = __nccwpck_require__(2603);
 const utils_1 = __nccwpck_require__(1314);
 const check_runs_1 = __nccwpck_require__(8561);
-const pr_triggers_1 = __nccwpck_require__(1390);
 const async = __importStar(__nccwpck_require__(7888));
 const axios_retry_1 = __importDefault(__nccwpck_require__(8709));
 // 50mb
@@ -56623,15 +56622,18 @@ async function runPR(octo, pr, headSha, runId) {
         const prNumber = pr.number;
         console.log(`PR number: ${prNumber}`);
         const publishingToken = (0, core_1.getInput)('publishing-token') ?? process.env['GITHUB_TOKEN'];
-        let selfComment = await getSelfComment(octo, prNumber);
+        /*
+        let selfComment = await getSelfComment(octo, prNumber)
         if (!selfComment) {
-            selfComment = await (0, pr_triggers_1.createInitialComment)(octo, pr);
+          selfComment = await createInitialComment(octo, pr)
         }
+    
         if (!(await shouldPublish(octo, pr, selfComment))) {
-            await check.skipped();
-            console.log(`PR is not published as checkbox is not ticked`);
-            return;
+          await check.skipped()
+          console.log(`PR is not published as checkbox is not ticked`)
+          return
         }
+         */
         // Step 2
         const artifact = await octo.rest.actions
             .listWorkflowRunArtifacts({
@@ -56758,20 +56760,21 @@ ${oldComment}
 
 </details>`;
         // Step 5
+        /*
         if (selfComment) {
-            await octo.rest.issues.updateComment({
-                ...github_1.context.repo,
-                comment_id: selfComment.id,
-                body: comment
-            });
+          await octo.rest.issues.updateComment({
+            ...context.repo,
+            comment_id: selfComment!.id,
+            body: comment
+          })
+        } else {
+          await octo.rest.issues.createComment({
+            ...context.repo,
+            issue_number: prNumber,
+            body: comment
+          })
         }
-        else {
-            await octo.rest.issues.createComment({
-                ...github_1.context.repo,
-                issue_number: prNumber,
-                body: comment
-            });
-        }
+         */
         await check.succeed(firstPublishUrl, oldComment, artifacts);
         // Delete the artifact so that we don't try to re-publish in the future
         await octo.rest.actions.deleteArtifact({
