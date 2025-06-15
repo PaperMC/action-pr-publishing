@@ -56769,7 +56769,7 @@ ${oldComment}
                 comment_id: selfComment.id
             });
         }
-        await check.succeed(firstPublishUrl, oldComment, artifacts);
+        await check.succeed(firstPublishUrl, `${paperclipMsg}\n\n${oldComment}`, artifacts);
         // Delete the artifact so that we don't try to re-publish in the future
         await octo.rest.actions.deleteArtifact({
             ...github_1.context.repo,
