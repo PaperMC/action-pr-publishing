@@ -171,13 +171,10 @@ export async function runPR(
     })
 
     const artifacts: PublishedArtifact[] = []
-    const basePath = `https://maven.pkg.github.com/${context.repo.owner}/${context.repo.repo}/`
-    const getPath = (path: string) => {
-      return (basePath + path).replace("io/papermc/paper", `io/papermc/paper-pr${prNumber}`)
-    }
+    const basePath = `https://maven.pkg.github.com/${context.repo.owner}/${context.repo.repo}/pr${prNumber}/`
 
     const uploader = async (path: string, bf: ArrayBuffer) => {
-      await axios.put(getPath(path), bf, {
+      await axios.put(basePath + path, bf, {
         auth: {
           username: 'actions',
           password: publishingToken
