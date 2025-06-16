@@ -302,7 +302,7 @@ ${paperclipMsg}
 
 <details>
 
-<summary>PR Publishing</summary>
+<summary>Maven Publication</summary>
 
 ${oldComment}
 
