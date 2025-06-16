@@ -56737,8 +56737,8 @@ async function runPR(octo, pr, headSha, runId) {
         const paperclipArtifact = await actionsArtifacts.then(art => art.data.artifacts.find(ar => ar.name == `paper-${prNumber}`));
         let paperclipMsg = 'Failed to find Paperclip artifact, please check the workflow run logs.';
         if (paperclipArtifact) {
-            const link = `https://nightly.link/${github_1.context.repo.owner}/${github_1.context.repo.repo}/actions/artifacts/${artifact.id}.zip`;
-            paperclipMsg = `Download the Paperclip jar for this pull request: [${artifact.name}.zip](${link})`;
+            const link = `https://nightly.link/${github_1.context.repo.owner}/${github_1.context.repo.repo}/actions/artifacts/${paperclipArtifact.id}.zip`;
+            paperclipMsg = `Download the Paperclip jar for this pull request: [${paperclipArtifact.name}.zip](${link})`;
         }
         comment = `
 Last updated for: [${headSha}](https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/commit/${headSha}).
