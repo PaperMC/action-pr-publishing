@@ -312,6 +312,7 @@ export async function runPR(
     }
 
     comment = `
+<!-- bot: artifact-publish-pr -->
 Last updated for: [${headSha}](https://github.com/${context.repo.owner}/${context.repo.repo}/commit/${headSha}).
 
 ${paperclipMsg}

@@ -56757,6 +56757,7 @@ async function runPR(octo, pr, headSha, runId) {
             paperclipMsg = `Download the Paperclip jar for this pull request: [${paperclipArtifact.name}.zip](${link})`;
         }
         comment = `
+<!-- bot: artifact-publish-pr -->
 Last updated for: [${headSha}](https://github.com/${github_1.context.repo.owner}/${github_1.context.repo.repo}/commit/${headSha}).
 
 ${paperclipMsg}
@@ -56970,22 +56971,16 @@ const pr_publish_1 = __nccwpck_require__(5926);
 async function runFromTrigger() {
     console.debug(`Triggered by event '${github_1.context.eventName}', action '${github_1.context.payload.action}'`);
     const octo = (0, utils_1.getOcto)();
-    console.debug(`Test ${octo}`);
     if (github_1.context.eventName == 'pull_request_target' &&
         github_1.context.payload.action == 'opened') {
         await createInitialComment(octo, github_1.context.payload.pull_request);
     }
     else if (github_1.context.eventName == 'issue_comment' &&
         github_1.context.payload.action == 'edited') {
-        console.debug(`Fetching`);
         const self = (0, core_1.getInput)('self-name');
-        console.debug(`Test ${self}`);
         if (github_1.context.payload.comment.user.login != self ||
-            github_1.context.payload.sender.login == self) {
-            console.debug(`Aborting cause '${self}' '${github_1.context.payload.comment.user.login}'  '${github_1.context.payload.sender.login}'`);
+            github_1.context.payload.sender.login == self)
             return;
-        }
-        console.debug(`Test ${github_1.context.payload.issue}`);
         if (github_1.context.payload.issue.pull_request == false) {
             console.log(`Not a PR, aborting`);
             return;
@@ -56996,7 +56991,6 @@ async function runFromTrigger() {
             pull_number: github_1.context.payload.issue.number
         })
             .then(d => d.data);
-        console.debug(`found ${pr}`);
         const prWorkflows = await getRunsOfPR(octo, pr.head.sha);
         const runName = (0, core_1.getInput)('uploader-workflow-name').replace('$pr', pr.number.toString());
         const run = prWorkflows.find(flow => flow.name == runName);
