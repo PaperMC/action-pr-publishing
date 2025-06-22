@@ -56553,8 +56553,11 @@ async function runFromPr() {
     const pull_request = github_1.context.payload.pull_request;
     if (!pull_request)
         throw new Error('No pull_request in context');
-    console.log(`Workflow run ID: ${github_1.context.runNumber}, head branch: ${pull_request.head.ref}, repo owner: ${pull_request.head.repo}`);
-    await runPR(octo, pull_request, pull_request.head.ref, github_1.context.runNumber);
+    const runId = github_1.context.runId;
+    if (!runId)
+        throw new Error('No runId in context');
+    console.log(`Workflow run ID: ${runId}, PR #${pull_request.number}, head branch: ${pull_request.head.ref}`);
+    await runPR(octo, pull_request, pull_request.head.ref, runId);
 }
 exports.runFromPr = runFromPr;
 async function runFromWorkflow() {
