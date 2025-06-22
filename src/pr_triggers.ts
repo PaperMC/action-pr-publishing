@@ -11,9 +11,7 @@ export async function runFromTrigger() {
     `Triggered by event '${context.eventName}', action '${context.payload.action}'`
   )
   const octo = getOcto()
-  console.debug(
-    `Test ${octo}`
-  )
+  console.debug(`Test ${octo}`)
   if (
     context.eventName == 'pull_request_target' &&
     context.payload.action == 'opened'
@@ -26,25 +24,21 @@ export async function runFromTrigger() {
     context.eventName == 'issue_comment' &&
     context.payload.action == 'edited'
   ) {
-    console.debug(
-      `Fetching`
-    )
+    console.debug(`Fetching`)
     const self = getInput('self-name')
-    console.debug(
-      `Test ${self}`
-    )
+    console.debug(`Test ${self}`)
     if (
       context.payload.comment!.user.login != self ||
       context.payload.sender!.login == self
     ) {
       console.debug(
-        `Aborting cause '${self}' '${context.payload.comment!.user.login}'  '${context.payload.sender!.login}'`
+        `Aborting cause '${self}' '${context.payload.comment!.user.login}'  '${
+          context.payload.sender!.login
+        }'`
       )
       return
     }
-    console.debug(
-      `Test ${context.payload.issue}`
-    )
+    console.debug(`Test ${context.payload.issue}`)
 
     if (context.payload.issue!.pull_request == false) {
       console.log(`Not a PR, aborting`)
@@ -57,9 +51,7 @@ export async function runFromTrigger() {
         pull_number: context.payload.issue!.number
       })
       .then(d => d.data)
-    console.debug(
-      `found ${pr}`
-    )
+    console.debug(`found ${pr}`)
     const prWorkflows = await getRunsOfPR(octo, pr.head.sha)
     const runName = getInput('uploader-workflow-name').replace(
       '$pr',
