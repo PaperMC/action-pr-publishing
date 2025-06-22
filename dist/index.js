@@ -56485,6 +56485,10 @@ const github_1 = __nccwpck_require__(5438);
 const pr_publish_1 = __nccwpck_require__(5926);
 const pr_triggers_1 = __nccwpck_require__(1390);
 async function run() {
+    if (github_1.context.eventName == 'pull_request') {
+        await (0, pr_publish_1.runFromPr)();
+        return;
+    }
     if (github_1.context.eventName == 'workflow_run') {
         await (0, pr_publish_1.runFromWorkflow)();
     }
@@ -56529,7 +56533,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.runPR = exports.runFromWorkflow = exports.shouldPublishCheckBox = void 0;
+exports.runPR = exports.runFromWorkflow = exports.runFromPr = exports.shouldPublishCheckBox = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github_1 = __nccwpck_require__(5438);
 const axios_1 = __importDefault(__nccwpck_require__(8757));
@@ -56544,6 +56548,15 @@ const axios_retry_1 = __importDefault(__nccwpck_require__(8709));
 // 50mb
 const artifactLimit = 50 * 1000000;
 exports.shouldPublishCheckBox = 'Publish PR to GitHub Packages';
+async function runFromPr() {
+    const octo = (0, utils_1.getOcto)();
+    const pull_request = github_1.context.payload.pull_request;
+    if (!pull_request)
+        throw new Error('No pull_request in context');
+    console.log(`Workflow run ID: ${github_1.context.runNumber}, head branch: ${pull_request.head.ref}, repo owner: ${pull_request.head.repo}`);
+    await runPR(octo, pull_request, pull_request.head.ref, github_1.context.runNumber);
+}
+exports.runFromPr = runFromPr;
 async function runFromWorkflow() {
     const octo = (0, utils_1.getOcto)();
     const workflow_run = github_1.context.payload.workflow_run;

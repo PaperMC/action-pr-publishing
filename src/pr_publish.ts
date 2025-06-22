@@ -18,6 +18,19 @@ import axiosRetry from 'axios-retry'
 const artifactLimit = 50 * 1000000
 export const shouldPublishCheckBox = 'Publish PR to GitHub Packages'
 
+export async function runFromPr(): Promise<void> {
+  const octo = getOcto()
+
+  const pull_request = context.payload.pull_request as PullRequest
+  if (!pull_request) throw new Error('No pull_request in context')
+
+  console.log(
+    `Workflow run ID: ${context.runNumber}, head branch: ${pull_request.head.ref}, repo owner: ${pull_request.head.repo}`
+  )
+
+  await runPR(octo, pull_request, pull_request.head.ref, context.runNumber)
+}
+
 export async function runFromWorkflow(): Promise<void> {
   const octo = getOcto()
 
