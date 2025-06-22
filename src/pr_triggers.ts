@@ -27,8 +27,12 @@ export async function runFromTrigger() {
     if (
       context.payload.comment!.user.login != self ||
       context.payload.sender!.login == self
-    )
+    ) {
+      console.debug(
+        `Aborting cause '${self}' '${context.payload.comment!.user.login}'  '${context.payload.sender!.login}'`
+      )
       return
+    }
 
     if (context.payload.issue!.pull_request == false) {
       console.log(`Not a PR, aborting`)
@@ -41,6 +45,9 @@ export async function runFromTrigger() {
         pull_number: context.payload.issue!.number
       })
       .then(d => d.data)
+    console.debug(
+      `found ${pr}`
+    )
     const prWorkflows = await getRunsOfPR(octo, pr.head.sha)
     const runName = getInput('uploader-workflow-name').replace(
       '$pr',
