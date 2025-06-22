@@ -19,16 +19,24 @@ const artifactLimit = 50 * 1000000
 export const shouldPublishCheckBox = 'Publish PR to GitHub Packages'
 
 export async function runFromPr(): Promise<void> {
-  const octo = getOcto()
+  const octo = getOcto();
 
-  const pull_request = context.payload.pull_request as PullRequest
-  if (!pull_request) throw new Error('No pull_request in context')
+  const pull_request = context.payload.pull_request as PullRequest;
+  if (!pull_request) throw new Error("No pull_request in context");
+
+  const runId = context.runId;
+  if (!runId) throw new Error("No runId in context");
 
   console.log(
-    `Workflow run ID: ${context.runNumber}, head branch: ${pull_request.head.ref}, repo owner: ${pull_request.head.repo}`
-  )
+    `Workflow run ID: ${runId}, PR #${pull_request.number}, head branch: ${pull_request.head.ref}`
+  );
 
-  await runPR(octo, pull_request, pull_request.head.ref, context.runNumber)
+  await runPR(
+    octo,
+    pull_request,
+    pull_request.head.ref,
+    runId
+  );
 }
 
 export async function runFromWorkflow(): Promise<void> {
