@@ -20,5 +20,5 @@ inputs:
     description: 'The token to use for publishing'
 
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
