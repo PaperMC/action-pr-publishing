@@ -1,16 +1,16 @@
 import * as core from '@actions/core'
 import { context } from '@actions/github'
 import { GitHub } from '@actions/github/lib/utils'
-import axios, { AxiosRequestConfig } from 'axios'
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios'
 import JSZip, { JSZipObject } from 'jszip'
 import * as process from 'process'
 import { getInput } from '@actions/core'
 import { XMLParser } from 'fast-xml-parser'
-import { getOcto, isAuthorMaintainer } from './utils'
-import { PullRequest } from './types'
-import { CheckRun } from './check_runs'
-import { createInitialComment } from './pr_triggers'
-import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types'
+import { getOcto, isAuthorMaintainer } from './utils.js'
+import { PullRequest } from './types.js'
+import { CheckRun } from './check_runs.js'
+import { createInitialComment } from './pr_triggers.js'
+import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 import * as async from 'async'
 import axiosRetry from 'axios-retry'
 
@@ -125,7 +125,7 @@ export async function runPR(
     console.log(`PR number: ${prNumber}`)
 
     const publishingToken =
-      getInput('publishing-token') ?? process.env['GITHUB_TOKEN']!
+      getInput('publishing-token') || process.env['GITHUB_TOKEN']!
 
     // Step 2
     const actionsArtifacts = octo.rest.actions.listWorkflowRunArtifacts({
@@ -168,13 +168,23 @@ export async function runPR(
     // Step 3
     const filters = getInput('artifacts-base-path').split('|')
     const toUpload = zip.filter((_relativePath, file) => {
-      return !file.dir && filters.some(filter => file.name.startsWith(filter))
+      if (file.dir || !filters.some(filter => file.name.startsWith(filter))) {
+        return false
+      }
+      if (!isValidArtifactPath(file.name)) {
+        console.warn(`Skipping: ${file.name}`)
+        return false
+      }
+      return true
     })
 
     const artifacts: PublishedArtifact[] = []
     const basePath = `https://maven.pkg.github.com/${context.repo.owner}/${context.repo.repo}/pr${prNumber}/`
 
     const uploader = async (path: string, bf: ArrayBuffer) => {
+      if (!isValidArtifactPath(path)) {
+        throw new Error(`Cannot upload artifact path: ${path}`)
+      }
       await axios.put(basePath + path, bf, {
         auth: {
           username: 'actions',
@@ -571,12 +581,25 @@ function getPackageName(prNumber: number, artifact: PublishedArtifact) {
   return `pr${prNumber}.${artifact.group}.${artifact.name}`
 }
 
+function isValidArtifactPath(name: string): boolean {
+  if (
+    !name ||
+    name.startsWith('/') ||
+    name.includes('\\') ||
+    name.includes('\0') ||
+    /^[A-Za-z]:/.test(name)
+  ) {
+    return false
+  }
+  return !name.split('/').includes('..')
+}
+
 async function attemptToFindMDK(
   mcMajor: number,
   mcMinor: number,
   config: AxiosRequestConfig,
   mdg: boolean = true
-): Promise<axios.AxiosResponse> {
+): Promise<AxiosResponse> {
   const fallback = async () => {
     // We first try MDG, now let's try NG
     if (mdg) {

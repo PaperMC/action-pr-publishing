@@ -1,8 +1,7 @@
 import { context, getOctokit } from '@actions/github'
 import { GitHub } from '@actions/github/lib/utils'
-import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types'
 import process from 'process'
-import { PullRequest } from './types'
+import { PullRequest } from './types.js'
 
 export async function isAuthorMaintainer(
   octo: InstanceType<typeof GitHub>,

@@ -1,8 +1,8 @@
 import { GitHub } from '@actions/github/lib/utils'
-import { PullRequest } from './types'
+import { PullRequest } from './types.js'
 import { context } from '@actions/github'
-import { PublishedArtifact } from './pr_publish'
-import { getRunURL } from './utils'
+import { PublishedArtifact } from './pr_publish.js'
+import { getRunURL } from './utils.js'
 
 export class CheckRun {
   private readonly octo: InstanceType<typeof GitHub>

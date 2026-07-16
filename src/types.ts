@@ -1,4 +1,4 @@
-import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types'
+import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 
 export type WorkflowRun =
   RestEndpointMethodTypes['actions']['getWorkflowRun']['response']['data']

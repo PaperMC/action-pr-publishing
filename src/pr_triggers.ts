@@ -1,10 +1,10 @@
-import { getOcto, isAuthorMaintainer } from './utils'
+import { getOcto, isAuthorMaintainer } from './utils.js'
 import { context } from '@actions/github'
 import { getInput } from '@actions/core'
-import { runPR, shouldPublishCheckBox } from './pr_publish'
+import { runPR, shouldPublishCheckBox } from './pr_publish.js'
 import { GitHub } from '@actions/github/lib/utils'
-import { PullRequest, WorkflowRun } from './types'
-import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types'
+import { PullRequest, WorkflowRun } from './types.js'
+import { RestEndpointMethodTypes } from '@octokit/plugin-rest-endpoint-methods'
 
 export async function runFromTrigger() {
   console.debug(
