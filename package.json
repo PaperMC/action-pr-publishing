@@ -1,7 +1,7 @@
 {
   "name": "action-pr-publishing",
   "description": "PR maven publishing through GitHub Actions",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": "",
   "private": true,
   "type": "module",

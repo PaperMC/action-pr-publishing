@@ -461,9 +461,8 @@ async function generateMDK(
   const buildGradle = (await zip.file('build.gradle')!.async('string')).split(
     new RegExp('\r\n|\n')
   )
-  buildGradle[
-    buildGradle.indexOf('dependencies {')
-  ] = `// PR repository \n${repoBlock}\ndependencies {`
+  buildGradle[buildGradle.indexOf('dependencies {')] =
+    `// PR repository \n${repoBlock}\ndependencies {`
   zip.file('build.gradle', buildGradle.join('\n'))
 
   const path = `${artifact.group.replace('.', '/')}/${artifact.name}/${

@@ -77859,7 +77859,7 @@ axiosRetry.isRetryableError = isRetryableError;
 
 
 // 50mb
-const artifactLimit = 50 * 1000000;
+const artifactLimit = parseInt(getInput('artifacts-size-limit')) * 1000000;
 const shouldPublishCheckBox = 'Publish PR to GitHub Packages';
 async function runFromWorkflow() {
     const octo = getOcto();
@@ -78177,7 +78177,8 @@ async function generateMDK(uploader, prNumber, artifact, repoBlock) {
     gradleProperties[mcVersionIndex] = `minecraft_version=${mcVersion}`;
     zip.file('gradle.properties', gradleProperties.join('\n'));
     const buildGradle = (await zip.file('build.gradle').async('string')).split(new RegExp('\r\n|\n'));
-    buildGradle[buildGradle.indexOf('dependencies {')] = `// PR repository \n${repoBlock}\ndependencies {`;
+    buildGradle[buildGradle.indexOf('dependencies {')] =
+        `// PR repository \n${repoBlock}\ndependencies {`;
     zip.file('build.gradle', buildGradle.join('\n'));
     const path = `${artifact.group.replace('.', '/')}/${artifact.name}/${artifact.version}/mdk-pr${prNumber}.zip`;
     await uploader(path, await zip.generateAsync({
